@@ -1,51 +1,53 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { images } from '../store/types';
 
-export const CoinCard = ({ crypto }) => {
+export const CoinCard = ({ crypto, onOpen }) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.upperRow}>
-        <Image style={styles.image} source={{ uri: images[crypto.symbol] }} />
-        <Text style={styles.coinSymbol}>{crypto.symbol}</Text>
-        <Text style={styles.seperator}>|</Text>
-        <Text style={styles.coinName}>{crypto.name}</Text>
-        <Text style={styles.coinPrice}>
-          {/* {Math.ceil(crypto.price_usd * 1000) / 1000} */}
-          {crypto.price_usd}
-          <Text style={StyleSheet.bold}>$</Text>
-        </Text>
-      </View>
-      <View style={styles.statisticsContainer}>
-        <Text>
-          24h:
-          <Text
-            style={
-              crypto.percent_change_24h < 0
-                ? styles.percentChangeMinus
-                : styles.percentChangePlus
-            }
-          >
-            {" "}
-            {crypto.percent_change_24h} %{" "}
+    <TouchableOpacity activeOpacity={0.7} onPress={() => onOpen(crypto)}>
+      <View style={styles.container}>
+        <View style={styles.upperRow}>
+          <Image style={styles.image} source={{ uri: images[crypto.symbol] }} />
+          <Text style={styles.coinSymbol}>{crypto.symbol}</Text>
+          <Text style={styles.seperator}>|</Text>
+          <Text style={styles.coinName}>{crypto.name}</Text>
+          <Text style={styles.coinPrice}>
+            {/* {Math.ceil(crypto.price_usd * 1000) / 1000} */}
+            {crypto.price_usd}
+            <Text style={StyleSheet.bold}>$</Text>
           </Text>
-        </Text>
-        <Text>
-          7d:
-          <Text
-            style={
-              crypto.percent_change_7d < 0
-                ? styles.percentChangeMinus
-                : styles.percentChangePlus
-            }
-          >
-            {" "}
-            {crypto.percent_change_7d} %{" "}
+        </View>
+        <View style={styles.statisticsContainer}>
+          <Text>
+            24h:
+            <Text
+              style={
+                crypto.percent_change_24h < 0
+                  ? styles.percentChangeMinus
+                  : styles.percentChangePlus
+              }
+            >
+              {" "}
+              {crypto.percent_change_24h} %{" "}
+            </Text>
           </Text>
-        </Text>
+          <Text>
+            7d:
+            <Text
+              style={
+                crypto.percent_change_7d < 0
+                  ? styles.percentChangeMinus
+                  : styles.percentChangePlus
+              }
+            >
+              {" "}
+              {crypto.percent_change_7d} %{" "}
+            </Text>
+          </Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

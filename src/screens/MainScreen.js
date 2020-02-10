@@ -1,16 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { CoinCard } from '../components/CoinCard';
 import fetchCoinData from '../store/actions/crypto';
-import { CoinCard } from './CoinCard';
 
-export default function CryptoContainer() {
+export default function MainScreen({ navigation }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchCoinData());
   }, [dispatch]);
+
+  const openCryptoHandler = crypto => {
+    navigation.navigate("Crypto", {
+      crypto
+    });
+  };
 
   const allCrypto = useSelector(state => state.crypto.data);
   const loading = useSelector(state => state.crypto.isFetching);
@@ -30,7 +36,9 @@ export default function CryptoContainer() {
       <FlatList
         data={allCrypto}
         keyExtractor={crypto => crypto.id.toString()}
-        renderItem={({ item }) => <CoinCard crypto={item} />}
+        renderItem={({ item }) => (
+          <CoinCard crypto={item} onOpen={openCryptoHandler} />
+        )}
       />
     </View>
   );
