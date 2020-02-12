@@ -1,27 +1,33 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Animated, Easing, Image, StyleSheet, Text, View } from 'react-native';
+
+import { images } from '../store/types';
 
 export const CryptoScreen = ({ navigation }) => {
+  const [fadeAnim] = useState(new Animated.Value(0));
+  const [spinAnim] = useState(new Animated.Value(0));
+
   const crypto = navigation.getParam("crypto");
   if (!crypto) {
     return null;
   }
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 3000
+    }).start();
+    Animated.timing(spinAnim, {
+      toValue: 1,
+      duration: 2000,
+      easing: Easing.linear
+    }).start();
+  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.text_container}>
         <Text style={styles.text}>
-          ранк:
-          <Text style={styles.value}>{crypto.rank}</Text>
-        </Text>
-        <Text style={styles.text}>
           Доступный запас:{" "}
           <Text style={styles.value}>{crypto.available_supply}</Text>
-        </Text>
-        <Text style={styles.text}>
-          Id: <Text style={styles.value}>{crypto.id}</Text>
-        </Text>
-        <Text style={styles.text}>
-          last_updated: <Text style={styles.value}>{crypto.last_updated}</Text>
         </Text>
         <Text style={styles.text}>
           рыночная капитализация USD:{" "}
@@ -49,12 +55,22 @@ export const CryptoScreen = ({ navigation }) => {
           Символ криптовалюты: <Text style={styles.value}>{crypto.symbol}</Text>
         </Text>
         <Text style={styles.text}>
-          Приблизительное общее количество монет, существующих на данный момен:{" "}
+          Кол-во монет, существующих на данный момен:{" "}
           <Text style={styles.value}>{crypto.total_supply}</Text>
         </Text>
       </View>
       <View>
-        <Image style={styles.image} source={{ uri: images[crypto.symbol] }} />
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            translateY: spinAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [150, 0] // 0 : 150, 0.5 : 75, 1 : 0
+            })
+          }}
+        >
+          <Image style={styles.image} source={{ uri: images[crypto.symbol] }} />
+        </Animated.View>
       </View>
     </View>
   );
@@ -70,25 +86,25 @@ CryptoScreen.navigationOptions = ({ navigation }) => {
 const styles = StyleSheet.compose({
   container: {
     flex: 1,
-    flexDirection: "row",
-    borderBottomColor: "#e5e5e5",
-    borderBottomWidth: 3,
+
     padding: 20
   },
   image: {
-    width: 100,
-    height: 100
+    width: 150,
+    height: 150
   },
   value: {
     fontSize: 14,
     fontWeight: "bold"
   },
   text: {
-    alignItem: "space-between"
+    marginBottom: 20,
+    borderBottomColor: "#e5e5e5",
+    borderBottomWidth: 1
   },
   text_container: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "space-between"
+    justifyContent: "flex-start"
   }
 });
